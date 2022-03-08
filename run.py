@@ -22,8 +22,7 @@ class_names=inicio.one_hot_encoding()
 # rf= randomForest
 # xgb = xgboost
 # svm = suport vetor machine
-'''
+
 model = modelos(model=classi, solver='liblinear', max_iter=4000)
 train = Entrenamiento(inicio.df, model)
 train.train(['mfccs_40'],class_names,classi,path_models)
-'''
