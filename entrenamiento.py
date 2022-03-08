@@ -8,13 +8,14 @@ import pickle
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import cross_val_score
 
-class Entrenamiento():
-    
-    def __init__(self, df, model):
-        self.df=df
-        self.model=model
 
-        print (' iniciando el entrenamiento con la técnica {}'.format(model))
+class Entrenamiento():
+
+    def __init__(self, df, model):
+        self.df = df
+        self.model = model
+
+        print(' iniciando el entrenamiento con la técnica {}'.format(model))
 
     def print_classification_results(self, y_test, res):
         print(metrics.accuracy_score(y_test, res))
@@ -56,12 +57,16 @@ class Entrenamiento():
         plt.xlabel('Predicted label')
         plt.tight_layout()
         plt.show()
+
     def save_model(self, model, model_name):
-        filename = "{}-{}.pkl".format(model_name, datetime.datetime.now().strftime("%Y%m%dT%H%M"))
+
+        filename = "{}-{}.pkl".format(model_name, \
+                                      datetime.datetime.now().strftime("%Y%m%dT%H%M"))
         pickle.dump(model, open(filename, 'wb'))
-        #files.download(filename)
+        # files.download(filename)
 
     def generateFeaturesLabels(self, features_list):
+
         total_features_len = np.sum([len(self.df[feature][0]) for feature in features_list])
         print("total number of features", total_features_len)
         features, labels = np.empty((0, total_features_len)), np.empty(0)
@@ -74,18 +79,22 @@ class Entrenamiento():
             labels = np.append(labels, row["label"])
         return np.array(features), np.array(labels, dtype=np.int)
 
-    def train(self, features, class_names,classi,path_models):
+    def train(self, features, class_names, classi, path_models):
+
         X, y = self.generateFeaturesLabels(features)
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=42)
+        X_train, X_test, y_train, y_test = train_test_split(X, y, \
+                                                            test_size=0.33, random_state=42)
 
         self.model.fit(X_train, y_train)
-        filename= path_models +"{}-{}.pkl".format(classi,datetime.datetime.now().strftime("%Y%m%dT%H%M"))
+        filename = path_models + "{}-{}.pkl".format(classi, datetime.datetime.now().strftime("%Y%m%dT%H%M"))
         pickle.dump(self.model, open(filename, 'wb'))
         print("Score:", self.model.score(X_test, y_test))
 
-        cross_val_scores = cross_val_score(self.model, X, y, cv=5, scoring='f1_macro')
+        cross_val_scores = cross_val_score(self.model, X, y, cv=5, \
+                                           scoring='f1_macro')
         print("cross_val_scores:", cross_val_scores)
-        print("Accuracy: %0.2f (+/- %0.2f)" % (cross_val_scores.mean(), cross_val_scores.std() * 2))
+        print("Accuracy: %0.2f (+/- %0.2f)" % (cross_val_scores.mean(), \
+                                               cross_val_scores.std() * 2))
 
         predictions = self.model.predict(X_test)
 
@@ -97,16 +106,9 @@ class Entrenamiento():
         print("*** Scaled ***")
         scaler = preprocessing.StandardScaler().fit(X_train)
         X_train_transformed = scaler.transform(X_train)
-        scaled_model = self.model.fit(X_train_transformed, y_train)
+        self.model.fit(X_train_transformed, y_train)
         X_test_transformed = scaler.transform(X_test)
-        print("scaled_model score:", self.model.score(X_test_transformed, y_test))
+        print("scaled_model score:", \
+              self.model.score(X_test_transformed, y_test))
 
         return self.model
- 
- 
-
-
-
-
-
-
